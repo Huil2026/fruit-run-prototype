@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fruit Run Prototype</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="game-shell">
+      <canvas id="game" width="960" height="540" aria-label="Fruit Run playable prototype"></canvas>
+
+      <section class="hud" aria-live="polite">
+        <div class="hud-panel mangoes">
+          <span class="label">Mangoes</span>
+          <strong id="mangoCounter">0 / 10</strong>
+        </div>
+        <div class="hud-panel timer">
+          <span class="label">Time</span>
+          <strong id="timerCounter">02:00</strong>
+        </div>
+        <div class="hud-panel tools">
+          <span id="stickState">Stick: No</span>
+          <span id="stoneState">Stones: 0</span>
+        </div>
+        <div class="hearts" id="heartRow" aria-label="Health"></div>
+      </section>
+
+      <nav class="touch-controls" aria-label="Mobile controls">
+        <div class="pad">
+          <button class="control" data-action="left" aria-label="Move left">Left</button>
+          <button class="control" data-action="right" aria-label="Move right">Right</button>
+        </div>
+        <div class="actions">
+          <button class="control" data-action="jump" aria-label="Jump">Jump</button>
+          <button class="control" data-action="swing" aria-label="Swing stick">Swing</button>
+          <button class="control" data-action="throw" aria-label="Throw stone">Throw</button>
+        </div>
+      </nav>
+
+      <section class="screen active" id="menuScreen">
+        <div class="screen-content">
+          <p class="kicker">The Huliganverse Presents</p>
+          <h1>Fruit Run</h1>
+          <button id="startButton">Start Game</button>
+          <button id="level2Button">Level 2</button>
+          <button id="howButton" class="secondary">How To Play</button>
+        </div>
+      </section>
+
+      <section class="screen" id="howScreen">
+        <div class="screen-content compact">
+          <h2>How To Play</h2>
+          <p>Collect 10 mangoes, dodge yard dogs and goats, grab the stick, pick up stones, and reach the end sign before time runs out.</p>
+          <p>A/D or Arrow Keys move, Space jumps, J swings, K throws.</p>
+          <button id="backButton">Main Menu</button>
+        </div>
+      </section>
+
+      <section class="screen" id="winScreen">
+        <div class="screen-content compact">
+          <h2>Level Complete!</h2>
+          <p id="winSubtext">You collected enough mangoes.</p>
+          <button id="nextLevelButton">Next Level</button>
+          <button id="winRestartButton">Restart</button>
+          <button id="winMenuButton" class="secondary">Main Menu</button>
+        </div>
+      </section>
+
+      <section class="screen" id="gameOverScreen">
+        <div class="screen-content compact">
+          <h2>Game Over</h2>
+          <p id="gameOverReason">Di fruit dem get away!</p>
+          <button id="retryButton">Retry</button>
+          <button id="gameOverMenuButton" class="secondary">Main Menu</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>

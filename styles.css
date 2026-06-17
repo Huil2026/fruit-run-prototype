@@ -1,0 +1,531 @@
+:root {
+  color-scheme: light;
+  --ink: #171512;
+  --panel: rgba(255, 248, 222, 0.88);
+  --panel-strong: #fff2bc;
+  --leaf: #207a4c;
+  --leaf-dark: #135538;
+  --sun: #ffbf45;
+  --mango: #ff9f1a;
+  --earth: #7b4e2d;
+  --sky: #7fd5ff;
+  --danger: #d94b3d;
+  --ui-heart: none;
+  --ui-mango-panel: none;
+  --ui-timer-panel: none;
+  --ui-jump: none;
+  --ui-swing: none;
+  --ui-throw: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #1d3325;
+  color: var(--ink);
+  font-family: "Arial Rounded MT Bold", "Trebuchet MS", Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  background: var(--leaf);
+  color: #fff;
+  cursor: pointer;
+  font: 800 16px/1.1 inherit;
+  min-height: 44px;
+  padding: 12px 18px;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+button:hover,
+button:focus-visible {
+  filter: brightness(1.08);
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+button:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.game-shell {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 12%, #ddf8ff 0, #9de1ff 25%, #3b8e74 78%);
+}
+
+#game {
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  display: block;
+  background: var(--sky);
+  box-shadow: 0 18px 70px rgba(0, 0, 0, 0.34);
+}
+
+.hud {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  width: min(1060px, calc(100vw - 24px));
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(260px, 1fr) minmax(160px, 0.48fr);
+  grid-template-areas:
+    "mango timer lives"
+    "tools tools lives";
+  align-items: start;
+  gap: 8px 10px;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.mangoes {
+  grid-area: mango;
+}
+
+.timer {
+  grid-area: timer;
+}
+
+.tools {
+  grid-area: tools;
+}
+
+.hearts {
+  grid-area: lives;
+}
+
+.hud-panel,
+.hearts {
+  min-height: 46px;
+  border: 2px solid rgba(68, 54, 28, 0.28);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 6px 16px rgba(40, 32, 18, 0.15);
+}
+
+.hud-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.ui-sprites-ready .hud-panel {
+  min-height: 58px;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  box-shadow: none;
+  padding: 9px 22px 12px;
+}
+
+.ui-sprites-ready .hud-panel.mangoes {
+  background-image: var(--ui-mango-panel);
+  justify-content: flex-end;
+  padding-left: 110px;
+  padding-right: 26px;
+}
+
+.ui-sprites-ready .hud-panel.timer {
+  background-image: var(--ui-timer-panel);
+  min-width: 0;
+  padding-left: 82px;
+  padding-right: 26px;
+}
+
+.hud-panel strong,
+.hud-panel span {
+  font-weight: 950;
+}
+
+.hud-panel strong {
+  font-size: 18px;
+}
+
+.ui-sprites-ready .hud-panel strong,
+.ui-sprites-ready .hud-panel.tools span {
+  color: #fff8e8;
+  font-family: Impact, "Arial Black", "Arial Rounded MT Bold", sans-serif;
+  font-size: 26px;
+  letter-spacing: 0;
+  line-height: 1;
+  paint-order: stroke fill;
+  text-shadow:
+    0 3px 0 #1b1009,
+    2px 0 0 #1b1009,
+    -2px 0 0 #1b1009,
+    0 -2px 0 #1b1009,
+    3px 5px 0 rgba(0, 0, 0, 0.28);
+}
+
+.hud-panel.tools {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  font-weight: 800;
+}
+
+.ui-sprites-ready .hud-panel.tools {
+  justify-content: center;
+  border: 3px solid #170c05;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 178, 59, 0.24), rgba(0, 0, 0, 0) 24%),
+    repeating-linear-gradient(0deg, #7b3d16 0 8px, #4f260c 8px 17px, #8d491c 17px 24px);
+  gap: 20px;
+  padding-left: 18px;
+  padding-right: 18px;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 220, 128, 0.36),
+    inset 0 -5px 0 rgba(25, 10, 3, 0.55),
+    0 4px 0 rgba(0, 0, 0, 0.28);
+}
+
+.label {
+  color: #5d4c27;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.ui-sprites-ready .label {
+  display: none;
+}
+
+.hearts {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  justify-content: center;
+  padding: 8px 10px;
+}
+
+.ui-sprites-ready .hearts {
+  min-height: 124px;
+  border: 3px solid #170c05;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 178, 59, 0.22), rgba(0, 0, 0, 0) 24%),
+    repeating-linear-gradient(0deg, #7b3d16 0 8px, #4f260c 8px 17px, #8d491c 17px 24px);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 220, 128, 0.36),
+    inset 0 -5px 0 rgba(25, 10, 3, 0.55),
+    0 4px 0 rgba(0, 0, 0, 0.28);
+  gap: 4px;
+  padding: 34px 10px 10px;
+  position: relative;
+}
+
+.ui-sprites-ready .hearts::before {
+  content: "LIVES";
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  color: #fff8e8;
+  font-family: Impact, "Arial Black", "Arial Rounded MT Bold", sans-serif;
+  font-size: 19px;
+  line-height: 1;
+  text-align: center;
+  text-shadow:
+    0 3px 0 #1b1009,
+    2px 0 0 #1b1009,
+    -2px 0 0 #1b1009,
+    0 -2px 0 #1b1009;
+}
+
+.heart {
+  width: 23px;
+  height: 23px;
+  transform: rotate(45deg);
+  background: #cabfa3;
+  position: relative;
+  border-radius: 5px 5px 2px 5px;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.heart::before {
+  left: -11px;
+  top: 0;
+}
+
+.heart::after {
+  left: 0;
+  top: -11px;
+}
+
+.heart.full {
+  background: var(--danger);
+}
+
+.ui-sprites-ready .heart {
+  width: 42px;
+  height: 38px;
+  transform: none;
+  background-color: transparent;
+  background-image: var(--ui-heart);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border-radius: 0;
+  filter: grayscale(1) saturate(0.3) opacity(0.48);
+}
+
+.ui-sprites-ready .heart::before,
+.ui-sprites-ready .heart::after {
+  display: none;
+}
+
+.ui-sprites-ready .heart.full {
+  background-color: transparent;
+  filter: drop-shadow(0 4px 0 rgba(0, 0, 0, 0.24));
+}
+
+.touch-controls {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  z-index: 4;
+  width: min(930px, calc(100vw - 24px));
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.pad,
+.actions {
+  display: flex;
+  gap: 9px;
+  pointer-events: auto;
+}
+
+.control {
+  min-width: 74px;
+  background: rgba(23, 85, 55, 0.84);
+  border: 2px solid rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(5px);
+}
+
+.control.pressed {
+  background: var(--sun);
+  color: var(--ink);
+}
+
+.ui-sprites-ready .actions {
+  gap: 12px;
+}
+
+.ui-sprites-ready .actions .control {
+  width: 112px;
+  height: 112px;
+  min-width: 112px;
+  min-height: 112px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-shadow: none;
+  color: transparent;
+  font-size: 0;
+}
+
+.ui-sprites-ready .actions .control[data-action="jump"] {
+  background-image: var(--ui-jump);
+}
+
+.ui-sprites-ready .actions .control[data-action="swing"] {
+  background-image: var(--ui-swing);
+}
+
+.ui-sprites-ready .actions .control[data-action="throw"] {
+  background-image: var(--ui-throw);
+}
+
+.ui-sprites-ready .actions .control.pressed {
+  filter: brightness(1.12) saturate(1.08);
+  transform: translateY(2px) scale(0.96);
+}
+
+.ui-sprites-ready .pad .control {
+  border-color: rgba(255, 232, 170, 0.65);
+  background: linear-gradient(180deg, #7a431d 0%, #45250f 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 216, 116, 0.38), 0 5px 0 rgba(35, 17, 7, 0.5);
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: 15px;
+  text-shadow: 0 2px 0 #130a04;
+}
+
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(12, 30, 20, 0.46);
+}
+
+.screen.active {
+  display: flex;
+}
+
+.screen-content {
+  width: min(520px, 100%);
+  border: 3px solid rgba(76, 51, 18, 0.34);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fff4bd 0%, #ffd66f 100%);
+  box-shadow: 0 22px 80px rgba(0, 0, 0, 0.36);
+  padding: 28px;
+  text-align: center;
+}
+
+.screen-content.compact {
+  width: min(470px, 100%);
+}
+
+.kicker {
+  margin: 0 0 6px;
+  color: #395f35;
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0 0 16px;
+  color: #162a1d;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: clamp(44px, 11vw, 78px);
+  line-height: 0.95;
+}
+
+h2 {
+  font-size: clamp(30px, 6vw, 48px);
+}
+
+.screen-content p {
+  margin: 0 auto 16px;
+  max-width: 38rem;
+  font-weight: 700;
+}
+
+.screen-content button {
+  margin: 6px;
+}
+
+button.secondary {
+  background: #3a3f33;
+}
+
+@media (max-width: 720px) {
+  .hud {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "mango timer"
+      "tools lives";
+    top: 8px;
+    gap: 7px;
+  }
+
+  .hud-panel,
+  .hearts {
+    min-height: 38px;
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+
+  .ui-sprites-ready .hud-panel {
+    min-height: 48px;
+    padding: 7px 14px 9px;
+  }
+
+  .ui-sprites-ready .hud-panel.mangoes {
+    padding-left: 78px;
+  }
+
+  .ui-sprites-ready .hud-panel.timer {
+    min-width: 0;
+    padding-left: 62px;
+  }
+
+  .ui-sprites-ready .hud-panel strong,
+  .ui-sprites-ready .hud-panel.tools span {
+    font-size: 18px;
+  }
+
+  .ui-sprites-ready .heart {
+    width: 30px;
+    height: 28px;
+  }
+
+  .ui-sprites-ready .hearts {
+    min-height: 48px;
+    padding: 15px 6px 4px;
+    gap: 1px;
+  }
+
+  .ui-sprites-ready .hearts::before {
+    top: 4px;
+    font-size: 12px;
+  }
+
+  .touch-controls {
+    bottom: 8px;
+  }
+
+  .pad,
+  .actions {
+    gap: 6px;
+  }
+
+  .control {
+    min-width: 55px;
+    min-height: 42px;
+    padding: 8px 9px;
+    font-size: 12px;
+  }
+
+  .ui-sprites-ready .actions .control {
+    width: 72px;
+    height: 72px;
+    min-width: 72px;
+    min-height: 72px;
+  }
+}
